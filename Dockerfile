@@ -18,12 +18,6 @@ RUN usermod -u 99 nobody
 RUN usermod -g 100 nobody
 RUN apt-get update -qq
 
-#VOLUMES
-VOLUME /config
-RUN rm -rf /opt/McMyAdmin/ProgramData-Server && \
-    ln -sf /config/ /opt/McMyAdmin/ProgramData-Server && \
-    chown -R nobody:users /opt/McMyAdmin
-
 # Install McMyAdmin run dependencies
 RUN apt-get install -qy --force-yes libmono-cil-dev Libgdiplus unzip wget
 
@@ -37,9 +31,14 @@ RUN mkdir mkdir /opt/McMyAdmin && \
     unzip MCMA2_glibc26_2.zip && \
     rm MCMA2_glibc26_2.zip
 
-RUN cd /home/mcma; /home/mcma/MCMA2_Linux_x86_64 -configonly -nonotice -nostart -updateonly > /dev/null 2>&1	
+RUN cd /opt/McMyAdmin; /opt/McMyAdmin/MCMA2_Linux_x86_64 -configonly -nonotice -nostart -updateonly > /dev/null 2>&1	
 	
 # Open ports
 EXPOSE      8080
 EXPOSE      25565
 
+#VOLUMES
+VOLUME /config
+RUN rm -rf /opt/McMyAdmin/ProgramData-Server && \
+    ln -sf /config/ /opt/McMyAdmin/ProgramData-Server && \
+    chown -R nobody:users /opt/McMyAdmin
